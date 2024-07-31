@@ -62,7 +62,7 @@ const handleExportAsCSV = () => {
              var blob = new Blob([response], { type: 'text/csv' });
              var url = window.URL.createObjectURL(blob);
              a.href = url;
-             a.download = `Floodlight-seo-audit-${Date.now()}.csv`; // The name of the downloaded file
+             a.download = `floodlight-seo-audit-${Date.now()}.csv`; // The name of the downloaded file
              document.body.appendChild(a);
              a.click();
              window.URL.revokeObjectURL(url);

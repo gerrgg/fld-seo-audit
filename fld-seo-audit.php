@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Define constants for the plugin
 define( 'FLOODLIGHT_SEO_AUDIT_VERSION', '1.0' );
 define( 'FLOODLIGHT_SEO_AUDIT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+$GLOBALS['base_url'] = sprintf('%s://%s', $_SERVER['REQUEST_SCHEME'], $_SERVER['SERVER_NAME']);
+
 
 // Hook for adding admin menus
 add_action( 'admin_menu', 'floodlight_seo_audit_add_admin_menu' );
@@ -98,15 +100,14 @@ function floodlight_seo_audit_admin_page() {
 
 function output_audit_results($images = false){
   if( $images ){
-
     echo '<hr />';
     echo '<h2>Results ('. sizeof($images) .')</h2>';
     foreach ($images as $image) {
       echo '<div style="display: flex; gap: 1rem; margin-bottom: 1rem">';
-        printf('<img src="%s" width="65" height="65" />', esc_url($image['image_src']));
+        printf('<a target="_blank" href="%s/wp-admin/upload.php?item=%s"><img src="%s" width="65" height="65" /></a>', $GLOBALS['base_url'], $image['id'], esc_url($image['image_src']));
         echo '<div>';
           // printf('<p style="margin: 0 0 0.5rem;">Page URL: <a href="%s">%s</a></p>', esc_url($image['post_url']), esc_url($image['post_url']));
-          printf('<p style="margin: 0 0 0.25rem;"><b>Edit URL:</b> <a href="%s">%s</a></p>', esc_url($image['edit_url']), esc_url($image['edit_url']));
+          printf('<p style="margin: 0 0 0.25rem;"><b>Edit URL:</b> <a  target="_blank" href="%s">%s</a></p>', esc_url($image['edit_url']), esc_url($image['edit_url']));
           // output_audit_edit_alt_text_form($image);
           output_audit_view_alt_text_form($image);
         echo '</div>';
@@ -200,7 +201,7 @@ function get_images_from_acf_fields($fields, $post_id, $post_url) {
                       $images_data[] = array(
                         'id'        =>  get_image_id_by_url_multisite($src),
                         'alt_text'  => $alt,
-                        'edit_url'  => sprintf('https://builder.floodlight.design/wp-admin/post.php?post=%s&action=edit', $post_id),
+                        'edit_url'  => sprintf('%s/wp-admin/post.php?post=%s&action=edit', $GLOBALS['base_url'], $post_id),
                         'image_src' => $src,
                         'post_url'  => $post_url,
                       );
